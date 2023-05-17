@@ -4,25 +4,33 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"text/template"
 )
 
 const portNumber = ":8080"
 
 func home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "home page")
+	renderTemplate(w, "home.page.tmpl")
 }
 func about(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "about page")
+	renderTemplate(w, "about.page.tmpl")
 }
-func earlyReturn(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "returned early")
-	return
-	fmt.Fprintf(w, "wont get display")
+
+func renderTemplate(w http.ResponseWriter, tmpl string) {
+	parseTemplate, err := template.ParseFiles("./templates/" + tmpl)
+	if err != nil {
+		fmt.Println("Parsing error", err)
+		return
+	}
+	err = parseTemplate.Execute(w, nil)
+	if err != nil {
+		fmt.Println("Parsing error", err)
+		return
+	}
 }
 func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/about", about)
-	http.HandleFunc("/earlyreturn", earlyReturn)
 	log.Printf("Starting server on %+s", portNumber)
 	http.ListenAndServe(portNumber, nil)
 }
