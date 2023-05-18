@@ -1,58 +1,58 @@
 package render
 
 import (
-	"fmt"
+	"bytes"
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
 )
 
-func RenderTemplateTest(w http.ResponseWriter, tmpl string) {
-	parseTemplate, err := template.ParseFiles("./templates/"+tmpl, "./templates/base.layout.tmpl")
+func RenderTemplate(w http.ResponseWriter, tmpl string) {
+
+	templateCache, err := createTemplateCache()
 	if err != nil {
-		fmt.Println("Parsing error", err)
-		return
+		log.Fatal(err)
 	}
-	err = parseTemplate.Execute(w, nil)
-	if err != nil {
-		fmt.Println("Parsing error", err)
-		return
+
+	template, ok := templateCache[tmpl]
+	if !ok {
+		log.Fatal(err)
 	}
-}
-
-var tc = make(map[string]*template.Template)
-
-func RenderTemplate(w http.ResponseWriter, t string) {
-	var tmpl *template.Template
-	var err error
-
-	_, inMap := tc[t]
-	if !inMap {
-		log.Println("Creating template and adding to cache")
-		err = cteateTemplateCache(t)
-		if err != nil {
-			log.Println(err)
-		}
-	} else {
-		log.Println("present in map cache")
-	}
-	tmpl = tc[t]
-	err = tmpl.Execute(w, nil)
+	buf := new(bytes.Buffer)
+	err = template.Execute(buf, nil)
 	if err != nil {
 		log.Println(err)
 	}
-
+	_, err = buf.WriteTo(w)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
-func cteateTemplateCache(t string) error {
-	templates := []string{
-		fmt.Sprintf("./templates/%s", t),
-		"./templates/base.layout.tmpl",
-	}
-	tmpl, err := template.ParseFiles(templates...)
+func createTemplateCache() (map[string]*template.Template, error) {
+	myCache := map[string]*template.Template{}
+	pages, err := filepath.Glob("./templates/*.page.tmpl")
 	if err != nil {
-		return err
+		return myCache, err
 	}
-	tc[t] = tmpl
-	return nil
+	for _, page := range pages {
+		name := filepath.Base(page)
+		ts, err := template.New(name).ParseFiles(page)
+		if err != nil {
+			return myCache, err
+		}
+		matches, err := filepath.Glob("./templates/*.layout.tmpl")
+		if err != nil {
+			return myCache, err
+		}
+		if len(matches) > 0 {
+			ts, err = ts.ParseGlob("./templates/*.layout.tmpl")
+			if err != nil {
+				return myCache, err
+			}
+		}
+		myCache[name] = ts
+	}
+	return myCache, nil
 }
