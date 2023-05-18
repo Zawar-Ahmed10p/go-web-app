@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/Zawar-Ahmed10p/go-web-app/pkg/config"
+	"github.com/Zawar-Ahmed10p/go-web-app/pkg/models"
 )
 
 var functions = template.FuncMap{}
@@ -19,7 +20,10 @@ func NewTemplates(a *config.Appconfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var templateCache map[string]*template.Template
 	if app.UseCache {
 		templateCache = app.TemplateCache
@@ -34,7 +38,8 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 		log.Fatal(err)
 	}
 	buf := new(bytes.Buffer)
-	err = template.Execute(buf, nil)
+	td = AddDefaultData(td)
+	err = template.Execute(buf, td)
 	if err != nil {
 		log.Println(err)
 	}
