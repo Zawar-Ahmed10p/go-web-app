@@ -2,19 +2,33 @@ package render
 
 import (
 	"bytes"
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/Zawar-Ahmed10p/go-web-app/pkg/config"
 )
 
+var functions = template.FuncMap{}
+var app *config.Appconfig
+
+//NewTemplates sets config for template
+func NewTemplates(a *config.Appconfig) {
+	app = a
+}
+
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
-
-	templateCache, err := createTemplateCache()
-	if err != nil {
-		log.Fatal(err)
+	var templateCache map[string]*template.Template
+	if app.UseCache {
+		templateCache = app.TemplateCache
+	} else {
+		templateCache, _ = CreateTemplateCache()
 	}
+	// templateCache = app.TemplateCache
 
+	err := errors.New("could not get new template from cache")
 	template, ok := templateCache[tmpl]
 	if !ok {
 		log.Fatal(err)
@@ -30,7 +44,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 	pages, err := filepath.Glob("./templates/*.page.tmpl")
 	if err != nil {
