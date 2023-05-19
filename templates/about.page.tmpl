@@ -8,6 +8,14 @@
             <p>here</p>
             <p>text</p>
             <p>From template -> {{index .StringMap "test"}}</p>
+            <p>
+                {{if ne (index .StringMap "remote_ip") ""}}
+                    Remote ip address {{index .StringMap "remote_ip"}}
+                {{else}}
+                    No rempte IP set via home
+                    <a href="/">Home page</a>
+                {{end}}
+            </p>
         </div>
     </div>
 </div>
