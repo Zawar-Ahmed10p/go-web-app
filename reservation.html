@@ -19,7 +19,8 @@
             color: white;
             font-size: 80%;
         }
-        .room-image{
+
+        .room-image {
             max-width: 50%;
         }
     </style>
@@ -63,18 +64,30 @@
     </nav>
 
 
-   
+
 
     <div class="container-fluid">
-        <div class="row">
+        <!-- <div class="row">
             <div class="col">
                 <h1>Book now Page</h1>
                </div>
-        </div>
+        </div> -->
         <div class="row">
             <div class="col">
-                <h1 class="text-center mt-4">Major Suite</h1>
-                
+                <h1 class="mt-5">Check for availability</h1>
+                <form action="reservation.html" method="get">
+                    <div class="mb-3">
+                        <label for="start_date" class="form-label">Starting date</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" aria-describedby="startDateHelp">
+                        <div id="startDateHelp" class="form-text text-muted">Enter starting date YYYY-MM-DD</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end_date" class="form-label">Ending date</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" aria-describedby="endDateHelp">
+                        <div id="endDateHelp" class="form-text text-muted">Enter ending date YYYY-MM-DD</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
         </div>
 
