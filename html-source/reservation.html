@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>My Nice Page</title>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.2/dist/css/datepicker-bs5.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
@@ -22,6 +24,10 @@
 
         .room-image {
             max-width: 50%;
+        }
+
+        .redText {
+            color: red;
         }
     </style>
 </head>
@@ -76,28 +82,39 @@
             <div class="col-md-3"></div>
             <div class="col-md-6">
                 <h1 class="mt-5">Check for availability</h1>
-                <form action="reservation.html" method="get">
+                <form action="reservation.html" method="get" novalidate class="needs-validation">
                     <div class="form-row">
                         <div class="col">
-                            <div class="mb-3">
-                                <label for="start_date" class="form-label">Starting date</label>
-                                <input required type="date" class="form-control" id="start_date" name="start_date"
-                                    aria-describedby="startDateHelp">
-                                <div id="startDateHelp" class="form-text text-muted">Enter starting date YYYY-MM-DD
+                            <div class="form-row" id="reservationDays">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <input required class="form-control" type="text" name="start" placeholder="Arrival">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <input required class="form-control" type="text" name="end" placeholder="departure">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="mb-3">
-                                <label for="end_date" class="form-label">Ending date</label>
-                                <input required type="date" class="form-control" id="end_date" name="end_date"
-                                    aria-describedby="endDateHelp">
-                                <div id="endDateHelp" class="form-text text-muted">Enter ending date YYYY-MM-DD</div>
-                            </div>
-                        </div>
                     </div>
+                    <hr>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </form>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col">
+                <p id="myPg">
+                    some text
+                </p>
+                <p>
+                    <button id="coloredButton" class="btn btn-outline-secondary">
+                        Click
+                    </button>
+                </p>
             </div>
         </div>
 
@@ -129,6 +146,7 @@
             </div>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.2/dist/js/datepicker-full.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -137,7 +155,45 @@
         integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
         crossorigin="anonymous"></script>
 
+    <script>
+        console.log("I am printing from javascript");
 
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                let forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+
+        document.getElementById("coloredButton").addEventListener("click", function () {
+
+            let l = document.getElementById("myPg");
+            if (l.classList.contains("redText")) {
+                l.classList.remove("redText")
+            } else {
+                l.classList.add("redText")
+            }
+        })
+
+        const elem = document.getElementById('reservationDays');
+        const rangepicker = new DateRangePicker(elem, {
+            format: "yyyy-mm-dd"
+            // ...options
+        });
+
+    </script>
 </body>
 
 </html>
