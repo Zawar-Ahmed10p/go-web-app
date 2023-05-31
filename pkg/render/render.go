@@ -3,6 +3,7 @@ package render
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -35,6 +36,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 	err := errors.New("could not get new template from cache")
 	template, ok := templateCache[tmpl]
 	if !ok {
+		fmt.Println("####")
 		log.Fatal(err)
 	}
 	buf := new(bytes.Buffer)

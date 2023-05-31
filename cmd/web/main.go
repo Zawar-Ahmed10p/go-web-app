@@ -27,7 +27,7 @@ func main() {
 	appConf.Session = session
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("unable to create template cache.")
+		log.Fatal("unable to create template cache.", err)
 	}
 	appConf.TemplateCache = tc
 	appConf.UseCache = false
